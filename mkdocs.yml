@@ -4,23 +4,28 @@ theme:
     name: 'material'
     palette:
 
-    # Light mode
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/link
+        name: Switch to light mode
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: pink
+      primary: indigo
       accent: indigo
       toggle:
-        icon: material/toggle-switch-off-outline
+        icon: material/toggle-switch
         name: Switch to dark mode
-
-    # Dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      primary: pink
-      accent: blue
+      primary: black
+      accent: indigo
       toggle:
-        icon: material/toggle-switch
-        name: Switch to light mode
+        icon: material/toggle-switch-off
+        name: Switch to system preference
+
+    font:
+      text: Roboto
+      code: Roboto Mono
 
 # Extensions
 markdown_extensions:
