@@ -1,11 +1,11 @@
-# Obsidian Notes
+# 介绍
 
-Publish your public notes with MkDocs
+这是 [wolfyzhang](https://wolfyzhang.com) 的知识库，是他学习的记录。
 
-## Hello World!
+主要涉及以下主题：
 
-The `index.md` in the `/docs` folder is the homepage you see here.
+- 大语言模型（尤其是应用）
 
-The folders in `/docs` appear as the main sections on the navigation bar.
+- 3C 产品（面向工业制造）
 
-The notes appear as pages within these sections. For example, [[Note 1]] in `Topic 1`
+- 计算机系统结构
