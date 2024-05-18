@@ -1,4 +1,4 @@
-# 1 Machine Learning
+# Machine Learning
 
 LaTeX math is supported using MathJax.
 

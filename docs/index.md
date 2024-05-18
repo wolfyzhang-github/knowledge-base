@@ -7,7 +7,7 @@ hide:
 
 这是 [wolfyzhang](https://wolfyzhang.com) 的知识库，是他学习的记录。
 
-主要涉及以下主题：
+主要涉及以下主题（上方 tab）：
 
 - 人工智能（尤其是商业应用）
 

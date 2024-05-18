@@ -1,4 +1,4 @@
-# 3 DL Architectures
+# DL Architectures
 
 You can have lists like this
 

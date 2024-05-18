@@ -1,41 +1,57 @@
 site_name: wolfyzhang's knowledge base
 
+nav:
+  - Home: index.md
+  - 3C:
+    - Electric toothbrushes: 3c/toothbrushes.md
+  - AI:
+    - Machine Learning: ai/machine_learning.md
+    - Deep Learning: ai/deep_learning.md
+    - DL Architectures: ai/dl_architectures.md
+    - NLP & CV: ai/nlp_cv.md
+    - LLM(Application):
+      - Large Language Model: ai/llm/large_language_model.md
+      - RAG: ai/llm/rag.md
+      - Agent: ai/llm/agent.md
+  - System:
+    - Compile: system/compile.md
+    - Run: system/run.md
+
 theme:
-    name: 'material'
-    palette:
-    - media: "(prefers-color-scheme)"
-      toggle:
-        icon: material/link
-        name: Switch to light mode
-    - media: "(prefers-color-scheme: light)"
-      scheme: default
-      primary: blue
-      accent: blue
-      toggle:
-        icon: material/toggle-switch
-        name: Switch to dark mode
-    - media: "(prefers-color-scheme: dark)"
-      scheme: slate
-      primary: black
-      accent: indigo
-      toggle:
-        icon: material/toggle-switch-off
-        name: Switch to system preference
-    font:
-      text: Roboto
-      code: Roboto Mono
-    features:
-      - content.action.edit
-      - content.code.copy
-      - navigation.tabs
-      - navigation.path
-      - navigation.expand
-      - navigation.tracking
-      - search.highlight
-      - search.share
-      - search.suggest
-      - toc.follow
-      - toc.integrate
+  name: 'material'
+  palette:
+  - media: "(prefers-color-scheme)"
+    toggle:
+      icon: material/link
+      name: Switch to light mode
+  - media: "(prefers-color-scheme: light)"
+    scheme: default
+    primary: blue
+    accent: blue
+    toggle:
+      icon: material/toggle-switch
+      name: Switch to dark mode
+  - media: "(prefers-color-scheme: dark)"
+    scheme: slate
+    primary: black
+    accent: indigo
+    toggle:
+      icon: material/toggle-switch-off
+      name: Switch to system preference
+  font:
+    text: Roboto
+    code: Roboto Mono
+  features:
+    - content.code.copy
+    - navigation.tabs
+    - navigation.path
+    - navigation.expand
+    - navigation.tracking
+    - search.highlight
+    - search.share
+    - search.suggest
+    - toc.follow
+    - toc.integrate
 
 # Extensions
 markdown_extensions:
