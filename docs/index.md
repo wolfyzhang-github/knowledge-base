@@ -1,4 +1,9 @@
-# 介绍
+---
+hide:
+  - navigation
+---
+
+# Home
 
 这是 [wolfyzhang](https://wolfyzhang.com) 的知识库，是他学习的记录。
 
