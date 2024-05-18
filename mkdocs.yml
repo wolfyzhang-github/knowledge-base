@@ -58,13 +58,20 @@ markdown_extensions:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
-
   - toc:
       permalink: true
 
 plugins:
   - search
   - roamlinks
+
+nav:
+  - 3C:
+    - 3C/index.md
+  - AI:
+    - AI/index.md
+  - System:
+    - System/index.md
 
 copyright: Copyright &copy; 2024 Guohui Zhang
 

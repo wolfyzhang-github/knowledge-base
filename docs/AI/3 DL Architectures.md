@@ -1,4 +1,4 @@
-# Text Formatting 
+# 3 DL Architectures
 
 You can have lists like this
 
