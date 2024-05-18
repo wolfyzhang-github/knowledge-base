@@ -3,7 +3,6 @@ site_name: wolfyzhang's knowledge base
 theme:
     name: 'material'
     palette:
-
     - media: "(prefers-color-scheme)"
       toggle:
         icon: material/link
@@ -22,20 +21,30 @@ theme:
       toggle:
         icon: material/toggle-switch-off
         name: Switch to system preference
-
     font:
       text: Roboto
       code: Roboto Mono
+    feature:
+      - content.action.edit
+      - content.code.copy
+      - navigation.expand
+      - navigation.footer
+      - navigation.indexes 
+      - navigation.sections
+      - navigation.tracking
+      - navigation.tabs
+      - navigation.top
+      - search.highlight
+      - search.share
+      - search.suggest
+      - toc.follow
+      - toc.integrate
 
 # Extensions
 markdown_extensions:
   - footnotes
-  # - attr_list
   - pymdownx.arithmatex:
       generic: true
-  # - pymdownx.superfences
-  # - pymdownx.details
-  # - pymdownx.magiclink
   - pymdownx.tasklist:
       custom_checkbox: true
   - def_list
@@ -56,14 +65,8 @@ markdown_extensions:
 plugins:
   - search
   - roamlinks
-  - blog
-  - rss:
-      match_path: blog/posts/.* 
-      date_from_meta:
-        as_creation: date
-      categories:
-        - categories
-        - tags
+
+copyright: Copyright &copy; 2024 Guohui Zhang
 
 extra_javascript:
   - javascripts/mathjax.js
