@@ -64,23 +64,27 @@ print(tokenizer.decode(outputs[0], skip_special_tokens=True))
 上述论文 [Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks
 ](https://arxiv.org/abs/2005.11401) 也给出了对应的示例代码，开源于：[github.com/huggingface/transformers/tree/main/examples/research_projects/rag](https://github.com/huggingface/transformers/tree/main/examples/research_projects/rag)。
 
-实际应用中，也有很多开源的 RAG 框架可供快速部署，例如 [RAGFlow](https://github.com/infiniflow/ragflow)、[MaxKB](https://github.com/1Panel-dev/MaxKB) 等。
+实际应用中，也有很多开源的 RAG 框架可供快速部署，例如 [RAGFlow](https://github.com/infiniflow/ragflow)、[MaxKB](https://github.com/1Panel-dev/MaxKB) 等。具体地，这些框架提供了从解析器到生成器的一整套解决方案，可以对不同文件格式的外部材料进行本地解析和 tokenize，亦可选择不同相似度的计算方法和后端大模型 API。
 
 ## Challenges
 
-对外部材料来说，一个是材料本身是否可靠，集中于质量问题和时效问题上；一个是 tokenize 的过程能否将外部材料信息高质量地转换为大模型可利用的 token。前者实际上更依赖于材料的提供者，而后者的影响因素众多，甚至涉及到多模态问题。例如，外部材料存在不同的文件格式或排版格式，使用的 OCR 等方式能否将其高质量地转换为纯文本信息？实际上，[Implementation](#implementation) 小节中提到的开源 RAG 框架 RAGFlow 已经在不同文件及排版格式上做了一些工作，RAGFlow 的文件解析器 DeepDoc 见 [github.com/infiniflow/ragflow/tree/main/deepdoc](https://github.com/infiniflow/ragflow/tree/main/deepdoc)。
+RAG 流程中，不同阶段分别有不同的潜在挑战。
 
-对检索器来说，核心则是两个问题，一个是检索得快不快，另一个则是准不准。在市面上常见的 RAG 框架中，一般是使用向量化的方式来计算向量之间余弦距离，或者通过关键词匹配的方式，再或者二者结合均返回结果，选其相关性较高的一个。显然，速度和准确难以得兼，更多是一个结合应用场景再做 trade off 的问题。学界对这个问题的进展我没有做深入调研，不过可以想见，一般也是在检索算法或者索引结构上做一些优化。
+对外部材料来说，一个是材料本身是否可靠，集中于质量问题和时效问题；一个是 tokenize 的过程能否将外部材料信息高质量地转换为大模型可利用的 token。
+
+前者实际上更依赖于材料的提供者，而后者的影响因素众多，甚至涉及到多模态问题。例如，外部材料存在不同的文件格式或排版格式，使用的 OCR 等方式能否将其高质量地转换为纯文本信息？实际上，[Implementation](#implementation) 小节中提到的开源 RAG 框架 RAGFlow 已经在不同文件及排版格式上做了一些工作，RAGFlow 的文件解析器 DeepDoc 见 [github.com/infiniflow/ragflow/tree/main/deepdoc](https://github.com/infiniflow/ragflow/tree/main/deepdoc)。
+
+对检索器来说，核心则是检索的速度和准确率。
+
+在市面上常见的 RAG 框架中，一般是使用向量化的方式来计算向量之间余弦距离，或者通过关键词匹配的方式，再或者二者结合均返回结果，选其相关性较高的一个。显然，速度和准确难以得兼，更多是一个结合应用场景再做 trade off 的问题。学界对这个问题的进展我没有做深入调研，我猜测是在检索算法或者索引结构上做一些优化。
 
 对生成器来说，实际上更依赖于大模型的表现，依赖于 Prompt Engineering 或者 Fine Tuning 等方法对模型本身做定向适配。
 
 除此之外，我在实际工作中也遇到了一些**看似和 RAG 强相关但其实已经超出了 RAG 适用范围**的问题，解决思路是用多个 Agents 做配合再结合一些传统算法。具体细节按下不表。
 
-## Attachments
+## More
 
-关于 RAG 的综述文章，依照最近更新时间排序。
-
-> 其 GitHub 仓库中有更丰富的综述信息；搜索文章标题可获取到中文的解说文章。
+关于 RAG 的综述文章，依照最近更新时间排序。其 GitHub 仓库中有更丰富的综述信息；搜索文章标题可获取到中文的解说文章。
 
 1. [Submitted on 29 Feb 2024 (v1), last revised 2 May 2024 (this version, v4)]: [Retrieval-Augmented Generation for AI-Generated Content: A Survey](https://arxiv.org/abs/2402.19473)
 
