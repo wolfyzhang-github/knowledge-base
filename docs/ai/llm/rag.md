@@ -62,7 +62,7 @@ print(tokenizer.decode(outputs[0], skip_special_tokens=True))
 其中，tokenizer 用于将文本转换为模型可以理解的格式，即 tokens；RagTokenForGeneration 是 RAG 模型的生成部分，RagRetriever 是 RAG 模型的检索部分。
 
 上述论文 [Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks
-](https://arxiv.org/abs/2005.11401) 也给出了对应的示例代码，开源于：[github.com/huggingface/transformers/tree/main/examples/research_projects/rag](https://github.com/huggingface/transformers/tree/main/examples/research_projects/rag)。
+](https://arxiv.org/abs/2005.11401) 也给出了对应的示例代码，开源于：[GitHub 链接](https://github.com/huggingface/transformers/tree/main/examples/research_projects/rag)。
 
 实际应用中，也有很多开源的 RAG 框架可供快速部署，例如 [RAGFlow](https://github.com/infiniflow/ragflow)、[MaxKB](https://github.com/1Panel-dev/MaxKB) 等。具体地，这些框架提供了从解析器到生成器的一整套解决方案，可以对不同文件格式的外部材料进行本地解析和 tokenize，亦可选择不同相似度的计算方法和后端大模型 API。
 
@@ -72,7 +72,7 @@ RAG 流程中，不同阶段分别有不同的潜在挑战。
 
 对外部材料来说，一个是材料本身是否可靠，集中于质量问题和时效问题；一个是 tokenize 的过程能否将外部材料信息高质量地转换为大模型可利用的 token。
 
-前者实际上更依赖于材料的提供者，而后者的影响因素众多，甚至涉及到多模态问题。例如，外部材料存在不同的文件格式或排版格式，使用的 OCR 等方式能否将其高质量地转换为纯文本信息？实际上，[Implementation](#implementation) 小节中提到的开源 RAG 框架 RAGFlow 已经在不同文件及排版格式上做了一些工作，RAGFlow 的文件解析器 DeepDoc 见 [github.com/infiniflow/ragflow/tree/main/deepdoc](https://github.com/infiniflow/ragflow/tree/main/deepdoc)。
+前者实际上更依赖于材料的提供者，而后者的影响因素众多，甚至涉及到多模态问题。例如，外部材料存在不同的文件格式或排版格式，使用的 OCR 等方式能否将其高质量地转换为纯文本信息？实际上，[Implementation](#implementation) 小节中提到的开源 RAG 框架 RAGFlow 已经在不同文件及排版格式上做了一些工作，RAGFlow 的文件解析器 DeepDoc 见 [GitHub 链接](https://github.com/infiniflow/ragflow/tree/main/deepdoc)。
 
 对检索器来说，核心则是检索的速度和准确率。
 
@@ -86,7 +86,8 @@ RAG 流程中，不同阶段分别有不同的潜在挑战。
 
 关于 RAG 的综述文章，依照最近更新时间排序。其 GitHub 仓库中有更丰富的综述信息；搜索文章标题可获取到中文的解说文章。
 
-1. [Submitted on 29 Feb 2024 (v1), last revised 2 May 2024 (this version, v4)]: [Retrieval-Augmented Generation for AI-Generated Content: A Survey](https://arxiv.org/abs/2402.19473)
+1. [Submitted on 29 Feb 2024 (v1), last revised 2 May 2024 (this version, v4)]
+[Retrieval-Augmented Generation for AI-Generated Content: A Survey](https://arxiv.org/abs/2402.19473)
 
-2. [Submitted on 18 Dec 2023 (v1), last revised 27 Mar 2024 (this version, v5)]: 
+2. [Submitted on 18 Dec 2023 (v1), last revised 27 Mar 2024 (this version, v5)] 
 [Retrieval-Augmented Generation for Large Language Models: A Survey](https://arxiv.org/abs/2312.10997)
