@@ -9,10 +9,12 @@ nav:
     - Deep Learning: ai/deep_learning.md
     - DL Architectures: ai/dl_architectures.md
     - NLP & CV: ai/nlp_cv.md
-    - LLM(Application):
+    - LLM:
       - Large Language Model: ai/llm/large_language_model.md
       - RAG: ai/llm/rag.md
       - Agent: ai/llm/agent.md
+      - Applications:
+        - AI + BI: ai/llm/app/bi.md
   - System:
     - Compile: system/compile.md
     - Run: system/run.md
