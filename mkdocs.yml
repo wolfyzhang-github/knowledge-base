@@ -1,24 +1,5 @@
 site_name: wolfyzhang's knowledge base
 
-nav:
-  - Home: index.md
-  - 3C:
-    - Electric toothbrushes: 3c/toothbrushes.md
-  - AI:
-    - Machine Learning: ai/machine_learning.md
-    - Deep Learning: ai/deep_learning.md
-    - DL Architectures: ai/dl_architectures.md
-    - NLP & CV: ai/nlp_cv.md
-    - LLM:
-      - Large Language Model: ai/llm/large_language_model.md
-      - RAG: ai/llm/rag.md
-      - Agent: ai/llm/agent.md
-      - Applications:
-        - AI + BI: ai/llm/app/bi.md
-  - System:
-    - Compile: system/compile.md
-    - Run: system/run.md
-
 theme:
   name: 'material'
   palette:
