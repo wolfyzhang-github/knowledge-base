@@ -1,1 +1,2 @@
-# Large Language Model
+# LLM
+LLM(Large Language Model)

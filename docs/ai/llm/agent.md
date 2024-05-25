@@ -1,5 +1,5 @@
-# Large Language Model Based Agents
-
+# Agents
+Large Language Model Based Agents
 ## Motivation
 
 ## Principle

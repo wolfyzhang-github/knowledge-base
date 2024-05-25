@@ -1,4 +1,4 @@
-# RAG(Retrieval-augmented generation)
+# RAG
 
 ## Motivation
 
