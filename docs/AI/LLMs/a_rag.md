@@ -41,17 +41,13 @@ Meta（当时还叫 Facebook）在 RAG 的原始论文 [Retrieval-Augmented Gene
 
 一个 RAG 实现示例：
 
-```python
-from transformers import RagTokenizer, RagRetriever, RagTokenForGeneration
+```python linenums="1"
 import torch
+from transformers import RagTokenizer, RagRetriever, RagTokenForGeneration
 
 # 初始化 tokenizer 和生成器
 tokenizer = RagTokenizer.from_pretrained("facebook/rag-token-nq")
-model = RagTokenForGeneration.from_pretrained(
-            "facebook/rag-token-nq", 
-            retriever=RagRetriever.from_pretrained(
-                "facebook/rag-token-nq", 
-                use_dummy_dataset=True))
+model = RagTokenForGeneration.from_pretrained("facebook/rag-token-nq", retriever=RagRetriever.from_pretrained("facebook/rag-token-nq", use_dummy_dataset=True))
 
 input_text = "What is the capital of France?"
 input_ids = tokenizer(input_text, return_tensors="pt").input_ids
