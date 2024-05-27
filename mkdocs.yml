@@ -27,12 +27,8 @@ theme:
     code: Roboto Mono
   features:
     - content.code.copy
-    - navigation.instant
-    - navigation.instant.prefetch
-    - navigation.instant.progress
     - navigation.tabs
-    - navigation.path
-    - navigation.indexes 
+    - navigation.indexes
     - navigation.expand
     - navigation.tracking
     - search.highlight
