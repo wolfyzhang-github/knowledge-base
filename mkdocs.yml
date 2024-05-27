@@ -60,6 +60,8 @@ markdown_extensions:
 plugins:
   - search
   - roamlinks
+  - git-revision-date
+  - macros
 
 copyright: Copyright &copy; 2024 Guohui Zhang
 
