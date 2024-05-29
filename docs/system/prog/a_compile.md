@@ -55,6 +55,8 @@ OK，信源又可以分为外部的和内部的，而我们现在显然不想去
 
 我们需要了解某个程序本身的执行过程，也就是具体去看它运行时的行为，如此，就可以考虑查看它的运行日志！日志是对程序执行状态的记录，通过它我们可以获取到程序在重要节点上的状态信息。
 
+### 拿到 log
+
 那么怎么看 gcc 的日志？聪明的你肯定敏锐地意识到这是一个需要从外部信源获取信息的问题——Google/问 LLM 一下就可以知道，其实只需要加个 `-v`  的参数就可以了。
 
 ```sh
@@ -104,6 +106,8 @@ COLLECT_GCC_OPTIONS='-v' '-o' 'hello' '-mtune=generic' '-march=x86-64' '-dumpdir
 
 以终端里空出来的回车换行为分界点：
 
+### 分析 log
+
 第一段，可以发现有一些 gcc 的版本（`gcc version 11.4.0 (Ubuntu 11.4.0-1ubuntu1~22.04)`）和运行环境信息（`Target: x86_64-linux-gnu`），大概率是一些初始化还有状态检查的东西，这些不是我们需要主要关心的，PASS。
 
 但是其中有两行是我们比较感兴趣的东西：
@@ -121,30 +125,10 @@ COLLECT_GCC_OPTIONS='-v' '-o' 'hello' '-mtune=generic' '-march=x86-64'
 
 联系一下 C 语言的语法细节——那么这一段大概率就是在找 `#include` 关键字后面的那个 `stdio.h` 了！
 
-看一下对应路径里的内容：
+看一下对应路径里的内容有没有我们需要的东西：
 
 ```sh
-$ ls -al /usr/lib/gcc/x86_64-linux-gnu/11/include
-total 2380
-drwxr-xr-x 3 root root  20480 Jan  6 06:42 ./
-drwxr-xr-x 4 root root   4096 Jan  6 06:42 ../
-......
--rw-r--r-- 1 root root   1210 May 13  2023 stdalign.h
--rw-r--r-- 1 root root   4072 May 13  2023 stdarg.h
--rw-r--r-- 1 root root   9360 May 13  2023 stdatomic.h
--rw-r--r-- 1 root root   1501 May 13  2023 stdbool.h
--rw-r--r-- 1 root root  12959 May 13  2023 stddef.h
--rw-r--r-- 1 root root   6000 May 13  2023 stdfix.h
--rw-r--r-- 1 root root   9539 May 13  2023 stdint-gcc.h
--rw-r--r-- 1 root root    328 May 13  2023 stdint.h
--rw-r--r-- 1 root root   1136 May 13  2023 stdnoreturn.h
--rw-r--r-- 1 root root    330 May 13  2023 syslimits.h
-......
-```
-
-果真都是一些头文件！而且里面有常用的 `stdint.h`，但却没有更常用的 `stdio.h` ？不过没关系，我们有四个路径，我们才只看了一个，可以继续看其余的三个：
-
-```sh
+$ ls -al /usr/lib/gcc/x86_64-linux-gnu/11/include | grep stdio.h
 $ ls -al /usr/local/include | grep stdio.h
 $ ls -al /usr/include/x86_64-linux-gnu | grep stdio.h
 $ ls -al /usr/include | grep stdio.h
@@ -337,12 +321,14 @@ h�����o���
 
 可以看到，最后的 `hello` 在 `hello.o` 的基础上加了很多东西，还出现了 `lib64/ld-linux-x86-64.so.2` 这样的东西——盲猜和那个处理 `.so` 文件的 `collect2` 有关！
 
+### 抽象概念
+
 好了，我们终于可以在头脑里形成一个概念性的过程了：
 
 ```mermaid
 graph LR
-  A[hello.c] --> |cc1| B[hello.s];
-  B --> |as| C[hello.o];
+  A[hello.c] --> |cc1| B(hello.s);
+  B --> |as| C(hello.o);
   C --> |collect2| D[hello];
 ```
 
@@ -350,14 +336,92 @@ graph LR
 
 ```mermaid
 graph LR
-  A[hello.c] --> B[hello.i];
-  B --> |cc1| C[hello.s];
-  C --> |as| D[hello.o];
+  A[hello.c] --> B(hello.i);
+  B --> |cc1| C(hello.s);
+  C --> |as| D(hello.o);
   D --> |collect2| E[hello];
 ```
 
 真是一段漫长的旅程呢，我们看了那么多的 log 和中间文件，最后只推理得到了一个这样的概念性的图示。到这里，前面那些细节就可以忘掉了。
 ## 理论：CALL + 经典三幕剧
+
+### 经典编译理论
+
+我们终于要介绍一下理论上的编译过程了，有了前面的铺垫，对理论的理解也会更轻松和透彻一些：
+
+```mermaid
+%%{init: {"flowchart": {"htmlLabels": false}} }%%
+flowchart TB
+	A[Begin] --"source code(.c .cpp .h)"--> cc
+	subgraph cc
+		direction TB
+		B(Preprocessing) --"include header, expand macro(.i .ii)"--> C(Compilation)
+	end
+	cc --"assembly code(.s)"--> as
+	subgraph as
+		D(Assemble)
+	end
+	as --"machine code(.o .obj)"--> ld
+	F(libc) --"static library(.lib .a) or shared blibrary(.dll .so)"--> ld
+	subgraph ld
+		E(Linking)
+	end
+	ld --"exectable machine code(.exe elf)"--> G[end]
+```
+
+如上图所示，一个 `gcc -o hello.exe hello.c`的编译步骤如下：
+
+1. 预处理：编译器 `cc` 主要是做包含头文件（`#include`）以及扩展宏（`#define`）的操作，更具体地说，就是把头文件和宏都做替换。生成的中间文件 `hello.i` 包含预处理后的源代码
+2. 编译：编译器 `cc` 将预处理的源代码编译为面向特定体系结构的汇编代码。生成的汇编文件为 `hello.s`
+3. 汇编：汇编器 `as` 将汇编代码转换为目标文件 `hello.o`中的机器代码，更具体地，就是把汇编代码按照指令集手册的标准转换为 0101 序列，即机器代码
+4. 链接：最后，链接器（`ld`）将目标文件与库文件链接起来，生成可执行文件 `hello`
+
+这个过程中值得细说的东西还有很多。
+
+结合我们上文对 gcc 编译日志的分析，首先，子程序 `cc1` 会被调用，触发「compilation」阶段，在这个阶段的处理过程中，遇到头文件或者宏时，会进入「preprocessing」阶段，做对应文件的替换或者宏展开，二者交替进行，最终生成完整的 `hello.s` 文件。
+
+「assemble」阶段之后，`hello.s` 文件会被汇编成二进制的 `hello.o` 文件，也有人把这种文件叫做 _relocatable object file_，直译为 _可重定位目标文件_，具体含义是指该文件中没有对引用的系统库或其他第三方库做链接，所以是地址无关的一种文件，也不能直接运行，故「可重定位」。
+
+具体地说，比如我们的 `hello.c` 中调用了 `stdio` 标准库中的 `printf` 函数，但我们只包含了 `stdio.h` 的头文件，头文件中又没有这个函数的具体实现，只有一个声明而已，那 `printf` 函数的实现究竟在哪？答案就是 libc，也就是对 C 标准库的一个实现。但是，在链接上 libc 这种标准库或者我们自己需要的第三方库之前，我们在做函数调用时并不能确定该函数跳转的位置，这就是所谓的「可重定位」的一个体现。
+
+#### 额外的链接分析
+
+那么链接阶段又如何呢？好吧链接又分为 Static Linking 和 Dynamic Linking，分别对应于 Static Libraries (.lib .a) 和 Shared Library (.dll .so)。区别就是前者是直接将目标文件和静态库文件打包合并为最终的可执行文件，而后者则是把共享库的一个「特殊指针」写到目标文件中，待目标文件执行需要用到共享库时，再做动态的调用。
+
+对应的优劣势也是显然的：静态链接的程序对运行时环境（runtime）的要求更低，但费空间，动态链接则反过来：省空间，库文件可复用，但万一运行时环境中没有对应的库文件，程序就跑不起来了。
+
+可以做个小小的测试：
+
+```sh
+$ gcc -o hello_static hello.c -static
+$ gcc -o hello_dynamic hello.c
+$ file hello_static
+hello_static: ELF 64-bit LSB executable, x86-64, version 1 (GNU/Linux), statically linked, BuildID[sha1]=f5e96a4b7db3667493ac65f24e2de5fdcb78a4d1, for GNU/Linux 3.2.0, not stripped
+$ file hello_dynamic
+hello_dynamic: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=665f4b77749f6a479ac9cd41259b9bdf0e9e88ed, for GNU/Linux 3.2.0, not stripped
+$ ll
+total 900K
+-rw-rw-r-- 1 ghzhang ghzhang   73 May 29 02:50 hello.c
+-rwxrwxr-x 1 ghzhang ghzhang  16K May 29 18:20 hello_dynamic*
+-rwxrwxr-x 1 ghzhang ghzhang 880K May 29 18:20 hello_static*
+```
+
+结果是显然的。静态链接的程序比动态链接的大了 $55$ 倍！我们还可以看到动态链接的程序用到了 `/lib64/ld-linux-x86-64.so.2` 这个库文件，那我们顺藤摸瓜，去找一下：
+
+```sh
+$ file /lib64/ld-linux-x86-64.so.2
+/lib64/ld-linux-x86-64.so.2: symbolic link to /lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+$ file /lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2: ELF 64-bit LSB shared object, x86-64, version 1 (GNU/Linux), dynamically linked, BuildID[sha1]=246ac0d8deba5a40c63e9a1a87d4d779d8eb589f, stripped
+$ ll /lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+-rwxr-xr-x 1 root root 236K Apr 16 21:40 /lib/x86_64-linux-gnu/ld-linux-x86-64.so.2*
+```
+
+仅仅这一个共享库就 `236kb` 大，比静态链接的程序本身还要大 $14.75$ 倍！
+
+其实，还可以做进一步的分析，比如对编译出来的 elf 文件做分析，查看具体代码段的位置和内容，可以更直观地看出两种链接方式的区别，不过现在也已经在把二者的实质性差异说清楚了。
+
+### 三段式编译器设计
 
 ## 深入：Just so so?
 
