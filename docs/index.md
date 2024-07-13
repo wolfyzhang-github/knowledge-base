@@ -5,7 +5,9 @@ hide:
 
 # Home
 
-这是 [wolfyzhang](https://wolfyzhang.com) 的知识库，是学习的记录，主要涉及以下主题（上方 tab）：
+学习的记录，主要涉及以下主题（上方 tab）：
+
+- 业务
 
 - 人工智能（尤其是商业应用）
 
@@ -13,7 +15,9 @@ hide:
 
 - 计算机系统结构
 
-This is [wolfyzhang](https://wolfyzhang.com/)'s knowledge base, is a record of learning, mainly related to the following topics (tab above):
+Record of learning, mainly related to the following topics (tab above):
+
+- Business
 
 - Artificial intelligence (especially commercial applications)
 
