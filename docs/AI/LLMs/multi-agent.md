@@ -1,5 +1,5 @@
 # Multi-Agent
-先聊一下传统意义上的 Agent，说清楚 LLM 引入 Agent 的背景和 motivation，再介绍一种对其理论建模的方式，以及比较强大的几款方便落地的框架，尤其是 AutoGen，最后谈谈潜在的一些典型问题。
+先聊一下传统意义上的 Agent，说清楚 LLM 引入 Agent 的背景和 motivation，再介绍一种对其理论建模的方式，以及比较强大的一款方便落地的框架（AutoGen），最后谈谈潜在的一些典型问题。
 ### Classic Agent
 Agent 不是一个新鲜的概念，在 LLM 引起广泛注意之前已经有了很多应用，实际上，它是对一个「有一定自主意识可以独立采取行动的代理人」的抽象。
 
@@ -18,7 +18,7 @@ Agent 不是一个新鲜的概念，在 LLM 引起广泛注意之前已经有了
 
 - **期望效用理论**：代理人根据其效用函数和各种行动结果的概率加权平均来选择行动。
 - **贝叶斯决策理论**：在信息不完全的情况下，代理人如何利用先验知识和观测数据更新其信念，并做出决策。
-#### MDP
+#### Markov decision process
 
 计算机科学中的 Agent 模型通常通过算法和计算方法来实现，例如**马尔可夫决策过程（Markov decision process, MDP）**，用于模拟在不确定环境中的决策过程。Agent 基于当前状态和可能的转移概率来选择行动，以最大化长期回报。
 
@@ -60,25 +60,115 @@ $$
 例如，AutoGen 中的 Agent 是可以发送消息、接收消息并通过模型、工具或人类输入（或它们的组合）生成回复的实体。这种设计使得 Agent 可以模拟现实世界中的实体（如人类、算法等），并简化了作为智能体协作的复杂工作流的实现。
 ## Principle
 
-> TODO 
+目前对 LLM Agent 建模的理论并不多（截至 2024 年 7 月 15 号我的检索结果），这个概念更多是一个实际应用中的工程概念。这里采用 [A Survey on Large Language Model based Autonomous Agents](https://arxiv.org/abs/2308.11432) 中提出的构建 LLM Agent 的统一理论框架。
 #### Construction
+结构上，Agent 可以分为四个模块，如图:
+![multi-agent-1.png](multi-agent-1.png) 
 
+其中，**Profiling Module** 定义智能体的角色和特征，包括手工制定、基于 LLM 生成和数据集对齐三种方法。**Memory Module** 设计内存结构来存储和回忆以往的行为和环境信息，包括统一内存和混合内存两种结构。内存格式包括自然语言、嵌入式表示和数据库。**Planning Module** 帮助智能体进行任务分解和未来行动的规划，分为无反馈规划和有反馈规划两种类型。**Action Module** 负责将智能体的决策转化为具体行动，涉及行动的目标、生成方式、可用的行动空间和行动的影响。
+
+各个模块的详细介绍见下文。
 ##### Profiling Module
 
+设置 Agent 的身份和行为特征。包括手工指定（Handcrafting）、基于LLM生成（LLM-generation）、数据集对齐（Dataset Alignment）三种方法。
+
+- **Handcrafting**：手动设定 Agent 的特征和行为。
+- **LLM-generation**：利用 LLM 自动生成 Agent 的描述。
+- **Dataset Alignment**：通过真实世界数据集来定义 Agent 的属性。
 ##### Memory Module
 
+设计用于存储和检索过去的行为和环境信息的结构，分为统一内存（Unified Memory）和混合内存（Hybrid Memory）。
+
+- **统一内存**：仅模拟人类短期记忆，通常通过上下文学习实现。
+- **混合内存**：显式模拟短期和长期记忆，提高了 Agent 的环境适应性和行动一致性。
 ##### Planning Module
 
+帮助 Agent 进行任务分解和未来行动的规划，分为无反馈规划（Planning without Feedback）和有反馈规划（Planning with Feedback）。
+
+- **无反馈规划**：Agent 在没有外界反馈的情况下生成整体计划。
+- **有反馈规划**：Agent 在行动后根据外界反馈调整计划。
 ##### Action Module
-
+负责将决策转化为具体行动，涉及行动的目标、生成方式、可用的行动空间和行动的影响。
 #### Capability Acquisition
+以上是在架构层面对 Agent 进行建模，可以视作是影响 Agent 的「硬件」，但我们还可以通过「软件」的方式来赋能 Agent 更强的能力。其中，可以**通过微调获得能力**，使用基于人类注释、LLM生成的数据集或真实世界数据集微调 LLM，也可以**不通过微调获得能力**，包括提示工程（Prompt Engineering）和 Agent 交互机制（Mechanism Engineering）两种策略，旨在通过精心设计的提示或 Agent 交互机制来提升 Agent 的能力。
+#### Evaluation
+##### Subjective Evaluation
 
-##### With Fine-tuning
+- **Human Annotation**：人类评审员对 Agent 的输出进行评价。
+- **Turing Test**：测试 Agent 的输出是否能与人类输出难以区分，以评估其人类水平的表现能力。
+##### Objective Evaluation 
 
-##### Without Fine-tuning
+- **Metrics (评估指标)**：包括任务成功率、与人类行为的相似度、效率等。
+- **Protocols (评估协议)**：包括真实世界模拟、社会评价、多任务评价和软件测试等。
+- **Benchmarks (基准测试)**：使用特定的基准测试集来系统地评估 Agent 性能，如ALFWorld、IGLU等。
+## Implementation（AutoGen）
 
-## Implementation
-#### AutoGen
+上面了解了 Multi-Agent 的理论背景，但实际开发中我们往往不会自行开发 infra，还是会采用方便配置的 Multi-Agent 框架。目前优秀的框架已经有很多，像是 AutoGPT 和 MetaGPT 等等，甚至还有图形化的 LangGraph、Dify 和 Coze 等等，这里我以微软的 AutoGen 为例，做一个粗略的实现机制的介绍，其实各个框架基本都是大同小异。
+
+AutoGen 中，上述特点具体体现在代码的类（classes）、参数（parameters）和方法（methods）中，下面是一些具体的实现方式：
+
+**ConversableAgent 类**：AutoGen 中所有 Agent 的基类，提供了基础的消息发送（`send`）、接收（`receive`）和回复生成（`generate_reply`）的方法，使得 Agent 能够参与到对话中，与其他 Agent 或用户交互。
+
+```python
+from autogen import ConversableAgent
+
+# 创建一个可对话的Agent，配置其LLM模型和人类输入模式
+agent = ConversableAgent(
+    name="example_agent",
+    llm_config={"config_list": [{"model": "gpt-4", "api_key": os.environ.get("OPENAI_API_KEY")}]},
+    human_input_mode="NEVER"  # 此Agent不需要人类输入
+)
+```
+
+**定制参数和方法**：`human_input_mode`：一个配置参数，支持开发者设定 Agent 是自动运行（`NEVER`），还是在某些操作前需要人类输入（`ALWAYS` 或者条件性触发）。`code_execution_config`：支持 Agent 执行代码，通常用于需要 Agent 操作外部软件或工具的场景。
+
+```python
+# 为Agent注册工具调用功能
+def calculator(a, b, operator):
+    if operator == '+':
+        return a + b
+    # 其他操作省略...
+
+# 注册工具
+agent.register_for_llm(name="calculator", description="A simple calculator")(calculator)
+agent.register_for_execution(name="calculator")(calculator)
+```
+
+**协作机制**：`register_reply` 和 `initiate_chat` 方法：允许 Agent 注册响应函数和启动与其他 Agent 的对话，是实现多 Agent 协作的核心。
+```python
+# 创建另一个Agent作为对话伙伴
+partner_agent = ConversableAgent(
+    name="partner",
+    llm_config={"config_list": [{"model": "gpt-4", "api_key": os.environ.get("OPENAI_API_KEY")}]},
+    human_input_mode="ALWAYS"  # 此Agent总是需要人类输入
+)
+
+# 初始化对话
+result = agent.initiate_chat(
+    partner=partner_agent,
+    message="Let's start a conversation.",
+    max_turns=5  # 设置最大对话轮数
+)
+```
+
+**层次化和动态交互**：可以创建包含多个 Agent 的复杂结构，其中高级 Agent 可以管理其他 Agent，并根据情况动态调整策略，通常通过在高级 Agent 中编写管理逻辑来实现，利用 `send` 和 `receive` 方法来协调子 Agent 的行动。
+```python
+# 在更高级的应用中，可以设置一个Agent来协调其他多个Agent
+manager = ConversableAgent(
+    name="manager",
+    llm_config={"config_list": [{"model": "gpt-4"}]},
+    human_input_mode="ALWAYS"
+)
+
+# 管理多个子Agent，示例中只展示了初始化部分
+sub_agent1 = ConversableAgent("sub_agent1", llm_config={"config_list": [{"model": "gpt-4"}]})
+sub_agent2 = ConversableAgent("sub_agent2", llm_config={"config_list": [{"model": "gpt-4"}]})
+
+# 假设存在一个复杂任务需要这些Agent合作完成
+task_message = "Please collaborate to solve this problem."
+manager.initiate_chat(partner=sub_agent1, message=task_message)
+manager.initiate_chat(partner=sub_agent2, message=task_message)
+```
 ## More
 
 1. [A Survey on Large Language Model based Autonomous Agents](https://arxiv.org/abs/2308.11432)
